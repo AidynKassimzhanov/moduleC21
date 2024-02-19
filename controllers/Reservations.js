@@ -63,7 +63,6 @@ async function clearExpiredReservations() {
     const expiredReservations = await Reservation.findAll({ where: { expires_at: { [Op.lt]: new Date() } } });
 
     for (const reservation of expiredReservations) {
-        console.log(reservation)
         await Seat.update({ reservation_id: null }, { where: { reservation_id: reservation.id } });
     }
 }
