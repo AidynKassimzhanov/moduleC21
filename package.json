@@ -1,0 +1,21 @@
+{
+  "name": "wsk-21",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Aidyn",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.4",
+    "express": "^4.18.2",
+    "mysql2": "^3.9.1",
+    "nodemon": "^3.0.3",
+    "router": "^1.3.8",
+    "sequelize": "^6.37.0",
+    "uuid": "^9.0.1"
+  }
+}
