@@ -39,7 +39,7 @@ async function seatings (req, res) {
             rows_array.push(row_json)
         }
 
-        res.json(rows_array)
+        res.json({rows: rows_array})
 
     } catch(error) {
         console.error(error);

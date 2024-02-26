@@ -37,7 +37,7 @@ const isValidReservation = async (reservations, show, duration) => {
         if (!reservation.row || !reservation.seat) {
             return 'The row or seat field is required.'
         }
-        const row = await Row.findOne({ where: { order: reservation.row, show_id: show.id } });
+        const row = await Row.findOne({ where: { id: reservation.row, show_id: show.id } });
         if (!row) {
             return `Seat ${reservation.seat} in row ${reservation.row} is invalid.`
         }
@@ -45,10 +45,6 @@ const isValidReservation = async (reservations, show, duration) => {
         const seat = await Seat.findOne({ where: { number: reservation.seat, location_seat_row_id: row.id } });
         if (!seat) {
             return `Seat ${reservation.seat} in row ${reservation.row} is invalid.`;
-        }
-    
-        if (seat.reservation_id !== null || seat.ticket_id !== null) {
-            return `Seat ${reservation.seat} in row ${reservation.row} is already taken.`;
         }
 
         if (duration > 300 || duration < 1) {
@@ -68,11 +64,16 @@ async function clearExpiredReservations() {
 }
 
 async function createReservation(reservations, reservationToken) {
-    
+
     for (const reservation of reservations) {
-        let row = await Row.findOne({where: { order: reservation.row}})
+        let row = await Row.findOne({where: { id: reservation.row}})
+
+        let seat = await Seat.findOne({where: { number: reservation.seat, location_seat_row_id: row.id}})
+        
+        const reservationId = seat.reservation_id !== null ? null : reservationToken.id
+
         Seat.update(
-            {reservation_id: reservationToken.id},
+            {reservation_id: reservationId},
             {where: {number: reservation.seat, location_seat_row_id: row.id}}
         )
     } 
@@ -90,6 +91,7 @@ const reservations = async (req, res) => {
     
         const concert = await Concert.findOne({where: {id: parseInt(concertId)}})
         const show = await Show.findOne({where: {id: showId}})
+        console.log(req.body)
     //Проверка наличия концерта или шоу 
         if (!concert || !show) {
             return res.status(404).json({ error: 'A concert or show with this ID does not exist' });
